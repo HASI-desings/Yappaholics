@@ -243,6 +243,11 @@ function logout() {
   // Clear inputs and reset auth UI
   $('auth-pass').value = '';
   resetAuthUI();
+  
+  // Reset profile
+  $('profile-img').src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzMTM1M2MiLz4KPHBhdGggZD0iTTIwIDIwQzIyLjc2MTQgMjAgMjUgMTcuNzYxNCAyNSAxNUMyNSAxMi4yMzg2IDIyLjc2MTQgMTAgMjAgMTBDMTcuMjM4NiAxMCAxNSAxMi4yMzg2IDE1IDE1QzE1IDE3Ljc2MTQgMTcgMjAgMjAiIHN0cm9rZT0iIzk1OGRhMSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+';
+  $('profile-name').textContent = 'Welcome back!';
+  
   initializeAuth();
   
   showToast('Logged out successfully', 'info');
@@ -370,13 +375,11 @@ function initDashboard() {
   // Update stats
   $('dash-sgpa').textContent = semesterGPA();
 
-  // Calculate credit hours
+  // Calculate and update credit hours and course count
   const totalCredits = state.courses.reduce((sum, c) => sum + c.credits, 0);
-  // Update credit hours display (assuming there's an element for it)
-  const creditEl = document.querySelector('.stat-value');
-  if (creditEl && creditEl.nextElementSibling?.textContent?.includes('Credit Hours')) {
-    creditEl.textContent = totalCredits;
-  }
+  const courseCount = state.courses.length;
+  $('dash-credits').textContent = totalCredits;
+  $('dash-course-count').textContent = `${courseCount} course${courseCount !== 1 ? 's' : ''}`;
 
   // Calculate highest grade
   let highestGrade = null;
@@ -391,15 +394,13 @@ function initDashboard() {
 
   // Update highest grade display
   if (highestGrade !== null && highestCourse) {
-    const highestEls = document.querySelectorAll('.stat-value');
-    highestEls.forEach(el => {
-      if (el.textContent === 'A+') {
-        el.textContent = gradeLabel(highestGrade);
-        el.nextElementSibling.textContent = highestCourse.name;
-        const badge = el.parentElement.querySelector('.stat-badge');
-        if (badge) badge.textContent = `${highestGrade.toFixed(1)}%`;
-      }
-    });
+    $('dash-highest-grade').textContent = gradeLabel(highestGrade);
+    $('dash-highest-course').textContent = highestCourse.name;
+    $('dash-highest-percent').textContent = `${highestGrade.toFixed(1)}%`;
+  } else {
+    $('dash-highest-grade').textContent = '—';
+    $('dash-highest-course').textContent = 'No grades yet';
+    $('dash-highest-percent').textContent = '—';
   }
 
   // Calculate at risk courses (below C+ which is ~77%)
@@ -407,14 +408,19 @@ function initDashboard() {
     const avg = courseAvg(c.id);
     return avg !== null && avg < 77;
   }).length;
+  $('dash-at-risk').textContent = atRiskCount;
 
-  // Update at risk display
-  const riskEls = document.querySelectorAll('.stat-value');
-  riskEls.forEach(el => {
-    if (el.style.color === 'var(--error)') {
-      el.textContent = atRiskCount;
-    }
-  });
+  // Update semester progress (simplified - could be based on weeks or assignments)
+  const totalGrades = state.grades.length;
+  const progressPercent = Math.min(totalGrades * 5, 100); // Simple progress based on grades added
+  $('dash-progress-percent').textContent = `${progressPercent}%`;
+  $('dash-progress-bar').style.width = `${progressPercent}%`;
+  $('dash-semester-info').textContent = totalGrades > 0 ? `${totalGrades} grade${totalGrades !== 1 ? 's' : ''} recorded` : 'Add grades to see progress';
+
+  // Update trend numbers (simplified - using current GPA)
+  $('trend-current').textContent = cgpa.toFixed(2);
+  $('trend-growth').textContent = '+0.00'; // Placeholder
+  $('trend-starting').textContent = '0.00'; // Placeholder
 
   // Recent activity
   const recent = [...state.grades].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
