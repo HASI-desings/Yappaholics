@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>M&amp;M's</title>
+
+  <!-- PWA / iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="M&amp;M's" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="An exclusive private space. Just the two of us." />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-192.png" />
+  <link rel="icon" type="image/png" href="icons/icon-192.png" />
+
+  <link rel="stylesheet" href="app.css?v=1" />
+</head>
+<body>
+  <div id="root">
+
+    <div class="aurora"></div>
+
+    <!-- ══ LOGIN SCREEN ══════════════════════════ -->
+    <section class="screen" id="login-screen">
+      <div class="logo">M&amp;M's</div>
+      <p class="login-subtitle">Your Private Space</p>
+
+      <div class="user-tiles">
+        <div class="user-tile" data-uid="mahi">
+          <div class="avatar-ring pulse">M</div>
+          <div class="tile-name">Mahi</div>
+          <div class="tile-role">That's you ✨</div>
+        </div>
+        <div class="user-tile" data-uid="mano">
+          <div class="avatar-ring">M</div>
+          <div class="tile-name">Mano</div>
+          <div class="tile-role">Always here 🤍</div>
+        </div>
+      </div>
+
+      <div class="invite-badge"><span>🔒</span> Invite Only</div>
+      <button class="btn-enter" id="btn-enter">Enter the Space</button>
+    </section>
+
+    <!-- ══ CHAT SCREEN ═══════════════════════════ -->
+    <section class="screen" id="chat-screen">
+      <div class="chat-bg"></div>
+
+      <header class="chat-header">
+        <div class="h-avatar">
+          <span id="my-avatar">M</span>
+          <div class="online-dot offline"></div>
+        </div>
+        <div class="h-info">
+          <div class="h-name">M&amp;M's</div>
+          <div class="h-status"></div>
+        </div>
+        <div class="h-actions">
+          <button class="icon-btn" id="call-btn" title="Video Call">📹</button>
+          <button class="icon-btn" id="theme-btn" title="Personalize">🎨</button>
+        </div>
+      </header>
+
+      <div class="msg-list" id="msg-list"></div>
+
+      <div class="emergency-wrap">
+        <button id="emergency-btn">
+          <span class="e-icon">🚨</span>
+          Emergency Meeting
+          <span class="e-icon">🚨</span>
+        </button>
+      </div>
+
+      <div class="recording-ui">
+        <div class="rec-dot"></div>
+        <div class="rec-time">🎙 0:00</div>
+        <button class="rec-cancel">Cancel</button>
+        <button class="rec-send">Send</button>
+      </div>
+
+      <div class="chat-input-wrap">
+        <div class="input-row">
+          <button class="icon-btn attach-btn" id="attach-btn" title="Attach">📎</button>
+          <div class="input-field-wrap">
+            <textarea id="msg-input" placeholder="Say something…" rows="1"></textarea>
+            <button class="mic-btn" id="mic-btn" title="Voice Note">🎤</button>
+          </div>
+          <button class="send-btn" id="send-btn" title="Send">➤</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ CALL SCREEN ═══════════════════════════ -->
+    <section class="screen" id="call-screen">
+      <div class="call-status">M&amp;M's — Live 🔴</div>
+      <div class="call-remote">
+        <video id="remote-video" autoplay playsinline></video>
+      </div>
+      <div class="call-local">
+        <video id="local-video" autoplay playsinline muted></video>
+      </div>
+      <div class="call-controls">
+        <button class="call-btn mute" id="mute-btn">🎤</button>
+        <button class="call-btn end" id="end-call-btn">📵</button>
+        <button class="call-btn cam" id="cam-btn">📷</button>
+      </div>
+    </section>
+
+    <!-- ══ MEDIA DRAWER ══════════════════════════ -->
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <div class="drawer" id="media-drawer">
+      <div class="drawer-handle"></div>
+      <div class="drawer-title">Share Something</div>
+      <div class="drawer-grid">
+        <div class="drawer-item" id="drawer-camera"><span class="d-icon">🎥</span><span class="d-label">Video Note</span></div>
+        <div class="drawer-item" id="drawer-voice"><span class="d-icon">🎙</span><span class="d-label">Voice Note</span></div>
+        <div class="drawer-item" id="drawer-photo"><span class="d-icon">🖼</span><span class="d-label">Photo/Video</span></div>
+        <div class="drawer-item" id="drawer-file"><span class="d-icon">📄</span><span class="d-label">File</span></div>
+        <div class="drawer-item" id="drawer-gif"><span class="d-icon">✨</span><span class="d-label">GIF</span></div>
+        <div class="drawer-item" style="opacity:.4;pointer-events:none"><span class="d-icon">📍</span><span class="d-label">Location</span></div>
+      </div>
+    </div>
+
+    <!-- ══ THEME PANEL ═══════════════════════════ -->
+    <div class="theme-overlay" id="theme-overlay"></div>
+    <div class="theme-panel" id="theme-panel">
+      <div class="drawer-handle"></div>
+      <div class="theme-panel-title">Personalize</div>
+      <div class="theme-scroll">
+        <div class="theme-card active" data-theme="dark">
+          <div class="theme-preview dark-prev"><div class="theme-prev-bar"></div></div>
+          <div class="theme-label">Dark</div>
+        </div>
+        <div class="theme-card" data-theme="light">
+          <div class="theme-preview light-prev"><div class="theme-prev-bar"></div></div>
+          <div class="theme-label">Light</div>
+        </div>
+        <div class="theme-card" data-theme="neon">
+          <div class="theme-preview neon-prev"><div class="theme-prev-bar"></div></div>
+          <div class="theme-label">Neon</div>
+        </div>
+        <div class="theme-card" data-theme="glass">
+          <div class="theme-preview glass-prev"><div class="theme-prev-bar"></div></div>
+          <div class="theme-label">Glass</div>
+        </div>
+      </div>
+      <button class="upload-bg-btn" id="upload-bg-btn">🌄 Upload Custom Background</button>
+    </div>
+
+    <!-- ══ VIDEO NOTE RECORDER ═══════════════════ -->
+    <div class="vidnote-preview">
+      <video class="vn-live" autoplay playsinline muted style="flex:1;object-fit:cover;background:#000"></video>
+      <div class="vidnote-controls">
+        <button class="vn-btn vn-cancel">✕</button>
+        <button class="vn-btn vn-rec">⏺</button>
+        <button class="vn-btn vn-stop hidden">⏹</button>
+        <button class="vn-btn vn-send hidden">📤</button>
+      </div>
+    </div>
+
+    <!-- ══ EMERGENCY ALERT ═══════════════════════ -->
+    <div class="emergency-alert" id="emergency-alert">
+      <div class="e-siren">🚨</div>
+      <h2>EMERGENCY MEETING</h2>
+      <p>You are urgently needed. Please acknowledge immediately.</p>
+      <button class="ack-btn">I'M HERE — ACKNOWLEDGE</button>
+    </div>
+
+    <!-- ══ LIGHTBOX ══════════════════════════════ -->
+    <div class="lightbox" id="lightbox"></div>
+
+  </div>
+
+  <!-- Supabase JS (replaces Socket.io) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <!-- App modules -->
+  <script src="js/supabase-client.js"></script>
+  <script src="js/emergency.js"></script>
+  <script src="js/webrtc.js"></script>
+  <script src="js/media.js"></script>
+  <script src="js/themes.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Test Suite (comment out for production) -->
+  <!-- <script src="test-suite.js"></script> -->
+</body>
+</html>
